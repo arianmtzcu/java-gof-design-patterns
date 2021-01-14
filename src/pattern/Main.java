@@ -3,6 +3,11 @@ package pattern;
 import static pattern.creational.prototype.PrototypeFactory.CartType.AMEX;
 import static pattern.creational.prototype.PrototypeFactory.CartType.VISA;
 
+import pattern.behavioral.chainofresponsibility.Tarjeta;
+import pattern.behavioral.command.CreditCard;
+import pattern.behavioral.command.CreditCardActivateCommand;
+import pattern.behavioral.command.CreditCardDesactivateCommand;
+import pattern.behavioral.command.CreditCardInvoker;
 import pattern.creational.abstractfactory.AbstractFactory;
 import pattern.creational.abstractfactory.Card;
 import pattern.creational.abstractfactory.FactoryProvider;
@@ -15,21 +20,33 @@ import pattern.creational.prototype.PrototypeFactory;
 public class Main {
 
    public static void main(String[] args) {
-      System.out.println("\n------- Factory -------");
+      System.out.println(" --- PATRONES CREACIONALES ---");
+      System.out.println("--------- Factory ----------");
       probarFactoryMethod();
-      System.out.println("-------------------------");
-      System.out.println("\n--- AbstractFactory ---");
+      System.out.println("------------------------------");
+      System.out.println("\n----- AbstractFactory ------");
       probarAbstractFactory();
-      System.out.println("-------------------------");
-      System.out.println("\n------- Builder -------");
+      System.out.println("------------------------------");
+      System.out.println("\n--------- Builder ----------");
       probarBuilder();
-      System.out.println("-------------------------");
-      System.out.println("\n------ Prototype ------");
+      System.out.println("------------------------------");
+      System.out.println("\n-------- Prototype ---------");
       probarPrototype();
-      System.out.println("-------------------------");
-      System.out.println("\n------- Sigleton -------");
+      System.out.println("-------------------------------");
+      System.out.println("\n--------- Sigleton ----------");
       probarSingleton();
-      System.out.println("--------------------------");
+      System.out.println("-------------------------------\n\n");
+
+      System.out.println("-- PATRONES DE COMPORTAMIENTO --");
+      System.out.println("\n---- ChainOfResponsibility -----");
+      probarChainOfResponsibility();
+      System.out.println("--------------------------------");
+      System.out.println("\n---------- Command -----------");
+      probarCommand();
+      System.out.println("---------------------------------\n\n");
+
+      System.out.println("----- PATRONES ESTRUCTURALES -----");
+      System.out.println("---------------------------------\n\n");
    }
 
    private static void probarFactoryMethod() {
@@ -75,5 +92,25 @@ public class Main {
    private static void probarSingleton() {
       pattern.creational.singleton.Card.getINSTANCE().setCardNumber("1234 1234 1234 1234");
       System.out.println(pattern.creational.singleton.Card.getINSTANCE().getCardNumber());
+   }
+
+   private static void probarChainOfResponsibility() {
+      // Se puede convinar aquí con los patrones creacionales perfectamente, en este caso convinamos con el new clásico
+      Tarjeta tarjeta = new Tarjeta();
+      // Solicitar el monto de la tarjeta de crédito aquí, entre 0 y 1 000 000 ...
+      tarjeta.crediCardRequest(100000); //Debería pasar por la Gold
+   }
+
+   private static void probarCommand() {
+      CreditCard creditCardActivated = new CreditCard();
+      CreditCard creditCardDesactivated = new CreditCard();
+
+      CreditCardInvoker invoker = new CreditCardInvoker();
+
+      invoker.setCommand(new CreditCardActivateCommand(creditCardActivated));
+      invoker.run();
+      System.out.println("-----------------------------------");
+      invoker.setCommand(new CreditCardDesactivateCommand(creditCardDesactivated));
+      invoker.run();
    }
 }
