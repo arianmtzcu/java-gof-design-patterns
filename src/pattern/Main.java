@@ -27,6 +27,9 @@ public class Main {
       System.out.println("\n------ Prototype ------");
       probarPrototype();
       System.out.println("-------------------------");
+      System.out.println("\n------- Sigleton -------");
+      probarSingleton();
+      System.out.println("--------------------------");
    }
 
    private static void probarFactoryMethod() {
@@ -67,5 +70,10 @@ public class Main {
       } catch (CloneNotSupportedException e) {
          e.printStackTrace();
       }
+   }
+
+   private static void probarSingleton() {
+      pattern.creational.singleton.Card.getINSTANCE().setCardNumber("1234 1234 1234 1234");
+      System.out.println(pattern.creational.singleton.Card.getINSTANCE().getCardNumber());
    }
 }
