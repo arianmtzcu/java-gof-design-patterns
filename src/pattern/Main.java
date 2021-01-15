@@ -8,6 +8,12 @@ import pattern.behavioral.command.CreditCard;
 import pattern.behavioral.command.CreditCardActivateCommand;
 import pattern.behavioral.command.CreditCardDesactivateCommand;
 import pattern.behavioral.command.CreditCardInvoker;
+import pattern.behavioral.iterator.CardList;
+import pattern.behavioral.iterator.Iterator;
+import pattern.behavioral.iterator.List;
+import pattern.behavioral.mediator.ConcreteColleage1;
+import pattern.behavioral.mediator.ConcreteColleage2;
+import pattern.behavioral.mediator.ConcreteMediator;
 import pattern.creational.abstractfactory.AbstractFactory;
 import pattern.creational.abstractfactory.Card;
 import pattern.creational.abstractfactory.FactoryProvider;
@@ -43,10 +49,16 @@ public class Main {
       System.out.println("--------------------------------");
       System.out.println("\n---------- Command -----------");
       probarCommand();
+      System.out.println("---------------------------------");
+      System.out.println("\n---------- Iterator -----------");
+      probarIterator();
+      System.out.println("---------------------------------");
+      System.out.println("\n---------- Mediator -----------");
+      probarMediator();
       System.out.println("---------------------------------\n\n");
 
       System.out.println("----- PATRONES ESTRUCTURALES -----");
-      System.out.println("---------------------------------\n\n");
+      System.out.println("---------------------------------\n\n"); 
    }
 
    private static void probarFactoryMethod() {
@@ -112,5 +124,34 @@ public class Main {
       System.out.println("-----------------------------------");
       invoker.setCommand(new CreditCardDesactivateCommand(creditCardDesactivated));
       invoker.run();
+   }
+
+   private static void probarIterator() {
+      pattern.behavioral.iterator.Card[] cards = new pattern.behavioral.iterator.Card[5];
+      cards[0] = new pattern.behavioral.iterator.Card("VISA");
+      cards[1] = new pattern.behavioral.iterator.Card("AMEX");
+      cards[2] = new pattern.behavioral.iterator.Card("MASTER CARD");
+      cards[3] = new pattern.behavioral.iterator.Card("GOOGLE CARD");
+      cards[4] = new pattern.behavioral.iterator.Card("APPLE CARD");
+
+      List lista = new CardList(cards);
+      Iterator iterator = lista.iterator();
+
+      while(iterator.hasNext()) {
+         pattern.behavioral.iterator.Card tarjeta = (pattern.behavioral.iterator.Card) iterator.next();
+         System.out.println(tarjeta.getType());
+      }
+   }
+
+   private static void probarMediator() {
+      ConcreteMediator mediator = new ConcreteMediator();
+      ConcreteColleage1 user1 = new ConcreteColleage1(mediator);
+      ConcreteColleage2 user2 = new ConcreteColleage2(mediator);
+
+      mediator.setUser1(user1);
+      mediator.setUser2(user2);
+
+      user1.send("Hola soy user1!");
+      user2.send("Hola user1, soy user2!");
    }
 }
