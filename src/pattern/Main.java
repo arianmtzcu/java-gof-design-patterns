@@ -14,6 +14,13 @@ import pattern.behavioral.iterator.List;
 import pattern.behavioral.mediator.ConcreteColleage1;
 import pattern.behavioral.mediator.ConcreteColleage2;
 import pattern.behavioral.mediator.ConcreteMediator;
+import pattern.behavioral.memento.Article;
+import pattern.behavioral.memento.ArticleMemento;
+import pattern.behavioral.memento.Carataker;
+import pattern.behavioral.observer.Coche;
+import pattern.behavioral.observer.MessagePublisher;
+import pattern.behavioral.observer.Peaton;
+import pattern.behavioral.observer.Semaforo;
 import pattern.creational.abstractfactory.AbstractFactory;
 import pattern.creational.abstractfactory.Card;
 import pattern.creational.abstractfactory.FactoryProvider;
@@ -23,6 +30,7 @@ import pattern.creational.factorymethod.PaymentFactory;
 import pattern.creational.factorymethod.TypePayment;
 import pattern.creational.prototype.ProtoTypeCard;
 import pattern.creational.prototype.PrototypeFactory;
+
 public class Main {
 
    public static void main(String[] args) {
@@ -55,10 +63,16 @@ public class Main {
       System.out.println("---------------------------------");
       System.out.println("\n---------- Mediator -----------");
       probarMediator();
+      System.out.println("---------------------------------");
+      System.out.println("\n---------- Memento -----------");
+      probarMemento();
+      System.out.println("---------------------------------\n\n");
+      System.out.println("\n---------- Observer -----------");
+      probarObserver();
       System.out.println("---------------------------------\n\n");
 
       System.out.println("----- PATRONES ESTRUCTURALES -----");
-      System.out.println("---------------------------------\n\n"); 
+      System.out.println("---------------------------------\n\n");
    }
 
    private static void probarFactoryMethod() {
@@ -137,7 +151,7 @@ public class Main {
       List lista = new CardList(cards);
       Iterator iterator = lista.iterator();
 
-      while(iterator.hasNext()) {
+      while (iterator.hasNext()) {
          pattern.behavioral.iterator.Card tarjeta = (pattern.behavioral.iterator.Card) iterator.next();
          System.out.println(tarjeta.getType());
       }
@@ -153,5 +167,59 @@ public class Main {
 
       user1.send("Hola soy user1!");
       user2.send("Hola user1, soy user2!");
+   }
+
+   private static void probarMemento() {
+      Carataker carataker = new Carataker();
+
+      //Creando artículo original
+      Article article = new Article("Arian", "Memento es una película");
+      article.setText(article.getText() + "de Nolan");
+      System.out.println(article.getText());
+      //Creando estado 1
+      carataker.addMemento(article.crearMemento());
+
+      article.setText(article.getText() + " protagonizada por Guy Pearcy");
+      System.out.println(article.getText());
+      //Creando estado 2
+      carataker.addMemento(article.crearMemento());
+
+      article.setText(article.getText() + " y Leonardo DiCaprio");
+      System.out.println(article.getText());
+
+      ArticleMemento memento1 = carataker.getMemento(0);
+      ArticleMemento memento2 = carataker.getMemento(1);
+
+      //Recuperando estado 1
+      article.restoreMemento(memento1);
+      System.out.println(article.getText());
+
+      //Recuperando estado 2
+      article.restoreMemento(memento2);
+      System.out.println(article.getText());
+
+      article.setText(article.getText() + " en el año 2021?");
+      System.out.println(article.getText());
+   }
+
+   private static void probarObserver() {
+      Coche coche = new Coche();
+      Peaton peaton = new Peaton();
+      MessagePublisher messagePublisher = new MessagePublisher();
+
+      messagePublisher.attach(coche);
+      messagePublisher.attach(peaton);
+      final String ROJO_COCHE = "ROJO_COCHE";
+      messagePublisher.notifyUpdate(new Semaforo(ROJO_COCHE));
+
+      try { //Simulando la espera de 2segudndo para hacer el cambio de luces de ROJO a Verde
+         System.out.println(">>>>>> ESPERANDO 2S PARA EL CAMBIO DE LUZ >>>>>>");
+         Thread.sleep(2000);
+      } catch (InterruptedException e) {
+         e.printStackTrace();
+      }
+
+      final String VERDE_COCHE = "VERDE_COCHE";
+      messagePublisher.notifyUpdate(new Semaforo(VERDE_COCHE));
    }
 }
