@@ -8,6 +8,10 @@ import pattern.behavioral.command.CreditCard;
 import pattern.behavioral.command.CreditCardActivateCommand;
 import pattern.behavioral.command.CreditCardDesactivateCommand;
 import pattern.behavioral.command.CreditCardInvoker;
+import pattern.behavioral.intepreter.AndExpression;
+import pattern.behavioral.intepreter.Expression;
+import pattern.behavioral.intepreter.OrExpression;
+import pattern.behavioral.intepreter.TerminalExpression;
 import pattern.behavioral.iterator.CardList;
 import pattern.behavioral.iterator.Iterator;
 import pattern.behavioral.iterator.List;
@@ -21,6 +25,9 @@ import pattern.behavioral.observer.Coche;
 import pattern.behavioral.observer.MessagePublisher;
 import pattern.behavioral.observer.Peaton;
 import pattern.behavioral.observer.Semaforo;
+import pattern.behavioral.state.MobileAlertStateContext;
+import pattern.behavioral.state.Silent;
+import pattern.behavioral.state.Vibration;
 import pattern.creational.abstractfactory.AbstractFactory;
 import pattern.creational.abstractfactory.Card;
 import pattern.creational.abstractfactory.FactoryProvider;
@@ -66,9 +73,15 @@ public class Main {
       System.out.println("---------------------------------");
       System.out.println("\n---------- Memento -----------");
       probarMemento();
-      System.out.println("---------------------------------\n\n");
+      System.out.println("---------------------------------");
       System.out.println("\n---------- Observer -----------");
       probarObserver();
+      System.out.println("---------------------------------");
+      System.out.println("\n---------- State -----------");
+      probarState();
+      System.out.println("---------------------------------");
+      System.out.println("\n---------- Intepreter -----------");
+      probarInterpreter();
       System.out.println("---------------------------------\n\n");
 
       System.out.println("----- PATRONES ESTRUCTURALES -----");
@@ -221,5 +234,34 @@ public class Main {
 
       final String VERDE_COCHE = "VERDE_COCHE";
       messagePublisher.notifyUpdate(new Semaforo(VERDE_COCHE));
+   }
+
+   private static void probarState() {
+      //El context maneja una instancia del estado actual
+      MobileAlertStateContext context = new MobileAlertStateContext();
+      context.alert();
+      context.alert();
+      //Brindar opción al usuario para cambiar el estado de Vibración
+      context.setCurrentState(new Vibration());
+      context.alert();
+      context.alert();
+      //Brindar opción al usuario para cambiar el estado de Silencio
+      context.setCurrentState(new Silent());
+      context.alert();
+      context.alert();
+   }
+
+   private static void probarInterpreter() {
+      Expression cero = new TerminalExpression("0");
+      Expression uno = new TerminalExpression("1");
+
+      Expression containBoolean = new OrExpression(cero, uno);
+      Expression containOnceAndCero = new AndExpression(cero, uno);
+
+      System.out.println(containBoolean.interpret("cero"));       //false: Debe devolver falso, porque en "cero" ---> debería contener 0 o 1
+      System.out.println(containBoolean.interpret("0"));          //true
+      System.out.println(containOnceAndCero.interpret("0"));      //false
+      System.out.println(containOnceAndCero.interpret("0, 1"));   //true
+      //Se pudieran añadir más reglas; para eso habría que construir más clases...
    }
 }
