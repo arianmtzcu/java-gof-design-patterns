@@ -28,6 +28,11 @@ import pattern.behavioral.observer.Semaforo;
 import pattern.behavioral.state.MobileAlertStateContext;
 import pattern.behavioral.state.Silent;
 import pattern.behavioral.state.Vibration;
+import pattern.behavioral.strategy.CapitalStrategyTestFormatter;
+import pattern.behavioral.strategy.Context;
+import pattern.behavioral.strategy.LowerStrategyTestFormatter;
+import pattern.behavioral.templatemethod.Paypal;
+import pattern.behavioral.templatemethod.Visa;
 import pattern.creational.abstractfactory.AbstractFactory;
 import pattern.creational.abstractfactory.Card;
 import pattern.creational.abstractfactory.FactoryProvider;
@@ -82,6 +87,13 @@ public class Main {
       System.out.println("---------------------------------");
       System.out.println("\n---------- Intepreter -----------");
       probarInterpreter();
+      System.out.println("---------------------------------");
+      System.out.println("\n---------- Strategy -----------");
+      probarStrategy();
+      System.out.println("---------------------------------");
+      System.out.println("\n------- Template Method --------");
+      probarTemplateMethod();
+      System.out.println("---------------------------------");
       System.out.println("---------------------------------\n\n");
 
       System.out.println("----- PATRONES ESTRUCTURALES -----");
@@ -263,5 +275,21 @@ public class Main {
       System.out.println(containOnceAndCero.interpret("0"));      //false
       System.out.println(containOnceAndCero.interpret("0, 1"));   //true
       //Se pudieran añadir más reglas; para eso habría que construir más clases...
+   }
+
+   private static void probarStrategy() {
+      Context context1 = new Context(new CapitalStrategyTestFormatter());
+      context1.publishText("Este texto sera convertido a mayuscula a traves del algoritmo definido como estrategia!");
+
+      Context context2 = new Context(new LowerStrategyTestFormatter());
+      context2.publishText("Este texto sera convertido a minusculas a traves del algoritmo definido como estrategia!");
+   }
+
+   private static void probarTemplateMethod() {
+      pattern.behavioral.templatemethod.Payment payment = new Visa();
+      payment.makePayment();
+
+      payment = new Paypal();
+      payment.makePayment();
    }
 }
