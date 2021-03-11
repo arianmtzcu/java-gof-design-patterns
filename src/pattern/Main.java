@@ -33,6 +33,11 @@ import pattern.behavioral.strategy.Context;
 import pattern.behavioral.strategy.LowerStrategyTestFormatter;
 import pattern.behavioral.templatemethod.Paypal;
 import pattern.behavioral.templatemethod.Visa;
+import pattern.behavioral.visitor.BlackCreditCardVisitor;
+import pattern.behavioral.visitor.ClassicCreditCardVisitor;
+import pattern.behavioral.visitor.OfertaElement;
+import pattern.behavioral.visitor.OfertaGasolina;
+import pattern.behavioral.visitor.OfertaVuelo;
 import pattern.creational.abstractfactory.AbstractFactory;
 import pattern.creational.abstractfactory.Card;
 import pattern.creational.abstractfactory.FactoryProvider;
@@ -93,6 +98,12 @@ public class Main {
       System.out.println("---------------------------------");
       System.out.println("\n------- Template Method --------");
       probarTemplateMethod();
+      System.out.println("---------------------------------");
+      System.out.println("\n----------- Visitor ------------");
+      probarVisitor();
+      System.out.println("---------------------------------");
+      System.out.println("\n----------- Adapter ------------");
+      probarAdapter();
       System.out.println("---------------------------------");
       System.out.println("---------------------------------\n\n");
 
@@ -291,5 +302,21 @@ public class Main {
 
       payment = new Paypal();
       payment.makePayment();
+   }
+
+   private static void probarVisitor() {
+      OfertaElement ofertaElement = new OfertaGasolina();
+      ofertaElement.accept(new BlackCreditCardVisitor());
+
+      ofertaElement = new OfertaVuelo();
+      ofertaElement.accept(new ClassicCreditCardVisitor());
+   }
+
+   private static void probarAdapter() {
+      pattern.behavioral.adapter.CreditCard creditCard = new pattern.behavioral.adapter.CreditCard();
+      creditCard.pay("classic");
+      creditCard.pay("gold");
+      creditCard.pay("black");
+      creditCard.pay("silver");
    }
 }
