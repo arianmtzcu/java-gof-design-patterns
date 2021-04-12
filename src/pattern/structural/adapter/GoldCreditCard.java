@@ -1,4 +1,4 @@
-package pattern.behavioral.adapter;
+package pattern.structural.adapter;
 
 public class GoldCreditCard implements Secure {
 

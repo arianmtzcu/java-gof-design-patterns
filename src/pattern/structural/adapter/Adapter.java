@@ -1,4 +1,4 @@
-package pattern.behavioral.adapter;
+package pattern.structural.adapter;
 
 //Permite adaptar la interfaz Payment y Secure!
 public class Adapter implements Payment {

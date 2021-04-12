@@ -1,4 +1,4 @@
-package pattern.behavioral.adapter;
+package pattern.structural.adapter;
 
 public interface Secure {
 

@@ -47,6 +47,9 @@ import pattern.creational.factorymethod.PaymentFactory;
 import pattern.creational.factorymethod.TypePayment;
 import pattern.creational.prototype.ProtoTypeCard;
 import pattern.creational.prototype.PrototypeFactory;
+import pattern.structural.bridge.ClassicCreditCard;
+import pattern.structural.bridge.SecureCreditCard;
+import pattern.structural.bridge.UnsecureCreditCard;
 
 public class Main {
 
@@ -101,13 +104,15 @@ public class Main {
       System.out.println("---------------------------------");
       System.out.println("\n----------- Visitor ------------");
       probarVisitor();
-      System.out.println("---------------------------------");
-      System.out.println("\n----------- Adapter ------------");
-      probarAdapter();
-      System.out.println("---------------------------------");
       System.out.println("---------------------------------\n\n");
 
       System.out.println("----- PATRONES ESTRUCTURALES -----");
+      System.out.println("\n----------- Adapter ------------");
+      probarAdapter();
+      System.out.println("---------------------------------");
+      System.out.println("\n----------- Bridge ------------");
+      probarBridge();
+      System.out.println("---------------------------------");
       System.out.println("---------------------------------\n\n");
    }
 
@@ -313,10 +318,20 @@ public class Main {
    }
 
    private static void probarAdapter() {
-      pattern.behavioral.adapter.CreditCard creditCard = new pattern.behavioral.adapter.CreditCard();
+      pattern.structural.adapter.CreditCard creditCard = new pattern.structural.adapter.CreditCard();
       creditCard.pay("classic");
       creditCard.pay("gold");
       creditCard.pay("black");
       creditCard.pay("silver");
+   }
+
+   private static void probarBridge() {
+      /* A la hora de hacer el pago lo vamos a poder realizar si esa tarejeta clasica va a estar configurada de 2 maneras */
+      //Confifurado de forma No-Segura
+      pattern.structural.bridge.CreditCard classic = new ClassicCreditCard(new UnsecureCreditCard());
+      classic.realizarPago();
+      //Confifurado de forma Segura
+      classic = new ClassicCreditCard(new SecureCreditCard());
+      classic.realizarPago();
    }
 }
