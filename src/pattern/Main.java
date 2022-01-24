@@ -38,10 +38,7 @@ import pattern.behavioral.visitor.ClassicCreditCardVisitor;
 import pattern.behavioral.visitor.OfertaElement;
 import pattern.behavioral.visitor.OfertaGasolina;
 import pattern.behavioral.visitor.OfertaVuelo;
-import pattern.creational.abstractfactory.AbstractFactory;
-import pattern.creational.abstractfactory.Card;
-import pattern.creational.abstractfactory.FactoryProvider;
-import pattern.creational.abstractfactory.PaymentMethod;
+import pattern.creational.abstractfactory.*;
 import pattern.creational.factorymethod.Payment;
 import pattern.creational.factorymethod.PaymentFactory;
 import pattern.creational.factorymethod.TypePayment;
@@ -50,6 +47,20 @@ import pattern.creational.prototype.PrototypeFactory;
 import pattern.structural.bridge.ClassicCreditCard;
 import pattern.structural.bridge.SecureCreditCard;
 import pattern.structural.bridge.UnsecureCreditCard;
+import pattern.structural.composite.CuentaAhorro;
+import pattern.structural.composite.CuentaComponent;
+import pattern.structural.composite.CuentaComposite;
+import pattern.structural.composite.CuentaCorriente;
+import pattern.structural.decorator.*;
+import pattern.structural.decorator.Credit;
+import pattern.structural.facade.CreditMarket;
+import pattern.structural.flyweight.Enemy;
+import pattern.structural.flyweight.EnemyFactory;
+import pattern.structural.proxy.Internet;
+import pattern.structural.proxy.ProxyInternet;
+
+import java.util.Random;
+import java.util.stream.IntStream;
 
 public class Main {
 
@@ -113,7 +124,22 @@ public class Main {
       System.out.println("\n----------- Bridge ------------");
       probarBridge();
       System.out.println("---------------------------------");
-      System.out.println("---------------------------------\n\n");
+      System.out.println("\n--------- Composite -----------");
+      probarComposite();
+      System.out.println("---------------------------------");
+      System.out.println("\n--------- Decorator -----------");
+      probarDecorator();
+      System.out.println("---------------------------------");
+      System.out.println("\n----------- Facade -------------");
+      probarFacade();
+      System.out.println("----------------------------------");
+      System.out.println("\n---------- Flyweight ------------");
+      probarFlyweight();
+      System.out.println("-----------------------------------");
+      System.out.println("\n------------ Proxy --------------");
+      probarProxy();
+      System.out.println("-----------------------------------");
+      System.out.println("-----------------------------------\n\n");
    }
 
    private static void probarFactoryMethod() {
@@ -334,4 +360,79 @@ public class Main {
       classic = new ClassicCreditCard(new SecureCreditCard());
       classic.realizarPago();
    }
+
+   private static void probarComposite() {
+      CuentaComponent cuentaCorriente = new CuentaCorriente(1000.0,"Brian Prieto");
+      CuentaComponent cuentaAhorro = new CuentaAhorro(20000.0, "Brian Prieto");
+
+      CuentaComposite cuentaComposite = new CuentaComposite();
+      cuentaComposite.addCuenta(cuentaCorriente);
+      cuentaComposite.addCuenta(cuentaAhorro);
+
+      cuentaComposite.showAccountName();
+      System.out.println("La cantidad de dinero es: " + cuentaComposite.getAmount());
+   }
+
+   private static void probarDecorator() {
+      Credit gold = new Gold();
+
+      Credit blackInternationalPayment = new Black();
+      // Tarjeta que tiene las ventas de ser Black (credito=1.000.000) nos brinda la posibilidad de hacer pagos internacionales
+      blackInternationalPayment = new InternationalPaymentDecorator(blackInternationalPayment);
+
+      Credit goldSecureInternational = new Gold();
+      goldSecureInternational = new InternationalPaymentDecorator(goldSecureInternational);
+      goldSecureInternational = new SecureDecorator(goldSecureInternational);
+
+      System.out.println(" ↓↓↓ Tarjeta Gold1 con configuracion ↓↓↓");
+      gold.showCredit();
+
+      System.out.println(" ↓↓↓ Tarjeta Black con configuracion ↓↓↓");
+      blackInternationalPayment.showCredit();
+
+      System.out.println(" ↓↓↓ Tarjeta Gold2 con configuracion ↓↓↓");
+      goldSecureInternational.showCredit();
+   }
+
+   private static void probarFacade() {
+      CreditMarket creditMarket = new CreditMarket();
+      creditMarket.showCreditGold();
+      creditMarket.showCreditSilver();
+      creditMarket.showCreditBlack();
+   }
+
+   private static void probarFlyweight() {
+      //for (int i=0; i<10; i++){...}
+      IntStream.range(0, 10).forEach(i -> {
+         Enemy enemy = EnemyFactory.getEnemy(getRandomEnemyType());
+         enemy.setWeapon(getRandomEnemyWeapon());
+         enemy.lifePoints();
+      });
+   }
+
+   private static String[] enemyType = {"Private", "Detective"};
+   private static String getRandomEnemyType() {
+      Random r = new Random();
+      int random = r.nextInt(enemyType.length);
+      return enemyType[random];
+   }
+
+   private static String[] enemyWeapons = {"Fusil", "Revolver", "Pistola", "Lanza Granada", "Bazuca"};
+   private static String getRandomEnemyWeapon() {
+      Random r = new Random();
+      int random = r.nextInt(enemyWeapons.length);
+      return enemyWeapons[random];
+   }
+
+   private static void probarProxy() {
+      Internet internet = new ProxyInternet();
+      try{
+         internet.connectTo("udemy.com");
+         internet.connectTo("marca.com");
+         internet.connectTo("facebook.com");
+      }catch (Exception e) {
+         System.out.println(e.getMessage());
+      }
+   }
+
 }
